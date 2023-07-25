@@ -1,10 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import data from "../data/mainData.json";
 import { Tstate } from "../types/Tcontext";
 import { TcolumnStrings } from "../types/Tcolumn";
 
 
-const INITIALVALUE= {
+export const INITIALVALUE= {
     filterData:{
         mod3:[],
         mod4:[],
@@ -34,14 +34,25 @@ export const filterSlice = createSlice({
         }>) => {
             state.filterData[action.payload.key] = action.payload.value  
         },
-        UPDATE_FILTER_DATA: (state:Tstate, action: PayloadAction<any>) => {
+        UPDATE_FILTERED_DATA: (state:Tstate, action: PayloadAction<any>) => {
+            console.log({
+                ac:action.payload
+            })
             state.filteredData = action.payload  
+        },
+        UPDATE_FILTER_DATA: (state:Tstate, action: PayloadAction<any>) => {
+            console.log({
+                ac:action.payload
+            })
+            state.filterOptions = action.payload  
         },
     },
   })
 
-export const { UPDATE_FILTER, UPDATE_FILTER_DATA } = filterSlice.actions
-export const selectFilter = (state) => state.filters
+export const { UPDATE_FILTER, UPDATE_FILTERED_DATA, UPDATE_FILTER_DATA } = filterSlice.actions
+export const selectFilter = (state:{
+    filters:Tstate
+}) => state.filters
 
 
 export default filterSlice.reducer
