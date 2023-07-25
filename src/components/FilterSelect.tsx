@@ -6,6 +6,11 @@ const FilterSelect = ({options, placeholder, onSelectChange, columnKey, selected
     <div>
       <Multiselect
         id="css_custom"
+        style={{
+          multiselectContainer: {
+            color: 'black'
+          },
+        }}
         isObject={false}
         onRemove={(data)=>onSelectChange(data, columnKey)}
         onSelect={(data)=>onSelectChange(data, columnKey)}
@@ -20,8 +25,8 @@ const FilterSelect = ({options, placeholder, onSelectChange, columnKey, selected
 type TfilterSelect = {
     options:(string)[],
     placeholder:string,
-    columnKey:TcolumnStrings,
-    onSelectChange:(selectedInput: string[], key: TcolumnStrings) => void,
-    selectedValues:string[]
+    columnKey: TcolumnStrings,
+    onSelectChange: (selectedInput: string[], key: String) => void,
+    selectedValues: String[]
 }
 export default FilterSelect;

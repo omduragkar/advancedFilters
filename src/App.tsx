@@ -5,7 +5,7 @@ import store from './redux/store';
 function App() {
  return (
     <>
-      <h1>business intelligence Dashboard</h1>
+      <h1> Business Intelligence Dashboard</h1>
       <Provider store={store}>
         <Dashboard/>
       </Provider>

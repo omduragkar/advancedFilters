@@ -14,18 +14,18 @@ import { columnKeys } from "../data/constants";
 const Dashboard = () => {
   const filterContext = useSelector(selectFilter);
   const dispatch = useDispatch();
-  const onSelectChange = (selectedInput: string[], key: TcolumnStrings) => {
+  const onSelectChange = (selectedInput: string[], key:String) => {
     dispatch(
       UPDATE_FILTER({
-        key,
+        key:key as TcolumnStrings,
         value: selectedInput,
       })
     );
   };
-  const checkforDefault = ()=>(columnKeys.reduce(
-    (previousValue: boolean, currValue: string) => {
+  const checkforDefault = () =>
+    columnKeys.reduce((previousValue: boolean, currValue: string) => {
       if (previousValue) {
-        if (filterContext.filterData[currValue].length == 0) {
+        if (filterContext.filterData[currValue as TcolumnStrings].length == 0) {
           return true;
         } else {
           return false;
@@ -33,155 +33,111 @@ const Dashboard = () => {
       } else {
         return false;
       }
-    },
-    true
-  ));
+    }, true);
   const getKeys = () => Object.keys(filterContext.filterData);
   const applyFilters = () => {
-    // Get the keys of the filterContext
-    // const filterKeys = Object.keys(filterContext.filterData);
-    
-    // Apply filters to the data
-    // filterKeys.map()
-    console.log("{applying filter}")
+    // console.log("{applying filter}");
     let newData = [...filterContext.data];
-    if(checkforDefault())
-    {
+    if (checkforDefault()) {
       dispatch(UPDATE_FILTERED_DATA(newData));
-
-    }else{
-      columnKeys.map(key=>{
-        if(filterContext.filterData[key].length > 0)
-        {
-          newData = newData.filter((item) => filterContext.filterData[key].includes(String(item[key])))
+    } else {
+      columnKeys.forEach((key) => {
+        if (filterContext.filterData[key as TcolumnStrings].length > 0) {
+          newData = newData.filter((item) =>
+            filterContext.filterData[key as TcolumnStrings].includes(String(item[key as TcolumnStrings]))
+          );
         }
-        console.log({newData})
       });
       dispatch(UPDATE_FILTERED_DATA(newData));
     }
     changeFilter(newData);
-    
   };
-  console.log({filterContext})
-  const changeFilter = (filteredData) => {
+  // console.log({ filterContext });
+  const changeFilter = (filteredData: {
+    number: number;
+    mod3: number;
+    mod4: number;
+    mod5: number;
+    mod6: number;
+}[]) => {
     let filterSelect = {
-      ...filterContext.filterData
+      ...filterContext.filterData,
     };
-    // console.log({ checkforDefault });
     if (checkforDefault()) {
-      console.log("Default check")
+      // console.log("Default check");
       dispatch(UPDATE_FILTER_DATA(INITIALVALUE.filterOptions));
     } else {
-      
-      let valuestocheck = columnKeys.filter((elm:TcolumnStrings)=>filterContext.filterData[elm].length != 0)
+      let valuestocheck = columnKeys.filter(
+        (elm) => filterContext.filterData[elm as TcolumnStrings].length != 0
+      );
 
-      columnKeys.forEach((elm:TcolumnStrings) => {
-        let impcheck = valuestocheck.find(v=>v == elm);
-        console.log({impcheck})
+      columnKeys.forEach((elm) => {
+        let impcheck = valuestocheck.find((v) => v == elm);
+        // console.log({ impcheck });
         let addtoSet = [];
         let checkData = [...filterContext.data];
-        if(impcheck){
-          let tocheck = valuestocheck.filter(v=>v != elm);
-          if(tocheck.length == 0){
-            addtoSet = INITIALVALUE.filterOptions[elm].filter(el=>!filterContext.filterData[elm].includes(el));
-          }else{
-            checkData = checkData.filter(data=>{
-              return tocheck.every(key=>filterContext.filterOptions[key].includes(String(data[key])))
-            })
-            addtoSet = Array.from(new Set(checkData.map(v=>String(v[elm]))));
-            console.log({addtoSet});
+        if (impcheck) {
+          let tocheck = valuestocheck.filter((v) => v != elm);
+          if (tocheck.length == 0) {
+            addtoSet = INITIALVALUE.filterOptions[elm as TcolumnStrings].filter(
+              (el) => !filterContext.filterData[elm as TcolumnStrings].includes(el)
+            );
+          } else {
+            checkData = checkData.filter((data) => {
+              return tocheck.every((key) =>
+                filterContext.filterOptions[key as TcolumnStrings].includes(String(data[key as TcolumnStrings]))
+              );
+            });
+            addtoSet = Array.from(
+              new Set(checkData.map((v) => String(v[elm as TcolumnStrings])))
+            );
+            // console.log({ addtoSet });
           }
-        }else{
+        } else {
           checkData = filteredData;
-          console.log({checkData, elm});
-          addtoSet = Array.from(new Set(checkData.map(v=>String(v[elm]))));
-          console.log({addtoSet, elm, checkData});
+          // console.log({ checkData, elm });
+          addtoSet = Array.from(new Set(checkData.map((v) => String(v[elm as TcolumnStrings]))));
+          // console.log({ addtoSet, elm, checkData });
         }
-        filterSelect[elm] = addtoSet;
-        // if(valuestocheck.length == 1 && valuestocheck[0] == elm)  {
-        // }else{
-        //   let newSet = new Set();
-        //   filterContext.data.map(vals=>{
-        //     // valuestocheck.map(val=>{
-        //     //   if(val!=elm)
-        //     //   {
-        //     //     if(filterContext.filterData[val].length > 0 && filterContext.filterData[val].includes(String(vals[val]))){
-        //     //       console.log({
-        //     //         vals,
-        //     //         elm,
-        //     //         tr:filterContext.filterData[val].includes(String(vals[val])),
-        //     //         ltr:filterContext.filterData[val],
-        //     //         rtr:String(vals[val]),
-        //     //         val,
-        //     //       })
-        //     //       newSet.add(vals[elm]);
-        //     //     }
-        //     //   }
-        //     // })
-        //   })
-        //   console.log({newSet, filterContext})
-        //   addtoSet = Array.from(newSet);
-        // }
-        // filterSelect[elm] = addtoSet; 
-      })
-      console.log({
-        filterSelect
-      })
-      
-      console.log({filterSelect})
+        filterSelect[elm as TcolumnStrings] = addtoSet;
+      });
+      // console.log({
+      //   filterSelect,
+      // });
+
+      // console.log({ filterSelect });
       dispatch(UPDATE_FILTER_DATA(filterSelect));
       // dispatch(UPDATE_FILTER_DATA(filterSelect));
-
-    }}
-      //   filterSelect.filter((values) => {
-      //     let newSet = new Set();
-      //     columnKeys.map((val) => {
-      //       if (val != elm) {
-      //         if (filterContext?.filterData[val]?.length > 0) {
-      //           if (
-      //             filterContext?.filterData[val]?.includes(String(values[val]))
-      //           ) {
-      //             newSet.add(values[elm]);
-      //           }
-      //         } else {
-      //           newSet.add(values[elm]);
-      //         }
-      //       }
-      //     });
-      //   });
-      //   if (filterContext?.filterData[elm]?.length > 0) {
-      //     newArray[elm] = filterContext?.filterData[elm];
-      //     filterSelect = filterSelect.filter((vals) => {
-      //       return filterContext?.filterData[elm].includes(String(vals[elm]));
-      //     });
-      //   } else {
-      //     let newObj = new Set();
-      //     filterSelect.forEach((dat) => {
-      //       dat[elm] && newObj.add(String(dat[elm]));
-      //     });
-      //     newArray[elm] = Array.from(newObj) ? Array.from(newObj) : [];
-      //   }
-      // });
-      // dispatch(UPDATE_FILTER_DATA(newArray));
-  //   }
-  // };
-
+    }
+  };
   useEffect(() => {
     applyFilters();
   }, [filterContext.filterData]);
 
   return (
     <div>
-      {getKeys()?.map((values) => (
-        <FilterSelect
-          key={Math.random()}
-          options={filterContext.filterOptions[values]}
-          placeholder={`Select for ${values}`}
-          onSelectChange={onSelectChange}
-          columnKey={values}
-          selectedValues={filterContext.filterData[values]}
-        />
-      ))}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingBottom: "1rem",
+          alignItems: "center",
+          gap: "0.5rem",
+        }}
+      >
+        {getKeys()?.map((values) => (
+          <div>
+            <FilterSelect
+              key={Math.random()}
+              options={filterContext.filterOptions[values as TcolumnStrings]}
+              placeholder={`Select for ${values}`}
+              onSelectChange={onSelectChange}
+              columnKey={values as  TcolumnStrings}
+              selectedValues={filterContext.filterData[values as TcolumnStrings]}
+            />
+          </div>
+        ))}
+      </div>
       <DataTableComponent data={filterContext.filteredData} />
     </div>
   );

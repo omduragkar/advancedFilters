@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import data from "../data/mainData.json";
+import data from "../data/mainData.json"
 import { Tstate } from "../types/Tcontext";
 import { TcolumnStrings } from "../types/Tcolumn";
 
