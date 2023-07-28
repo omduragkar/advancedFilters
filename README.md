@@ -1,3 +1,13 @@
+# Running the code:
+It's simple:
+   1. Just do npm install
+   2. then npm run dev
+   3. Make sure to download nodejs at begining!
+# Task Info:
+   1. Created components and folder structure
+   2. Added storybook feature.
+   3. Jest work was remaining due to time constraints as my college exams are going on!
+   4. Can load info and work accordingly from json data.
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
